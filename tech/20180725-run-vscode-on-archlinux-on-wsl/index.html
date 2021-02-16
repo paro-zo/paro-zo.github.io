@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><title>在 WSL 上的 Arch Linux 里运行 VSCode | vaParo 的世界</title>
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css/normalize.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/firacode/distr/fira_code.css">
+  <link rel="stylesheet" href="/fonts/andika-phon/andika-phon.css"><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <div id="outer"><div id="inner"><header>
+  <nav><div id="breadcrumb">
+  /<a href="/">vaParo 的世界/</a><a href="/tech/">技术/</a></div>
+<div id="site-nav"><a href="/tech/">技术</a><a href="/thoughts/">随想</a><a href="/studies/">博学</a><a href="/memories/">记忆</a><a href="/universe/">宇宙</a><a href="/about/">关于</a></div>
+</nav>
+  <h1>在 WSL 上的 Arch Linux 里运行 VSCode</h1>
+</header>
+<main><article><div class="meta"><time datetime="2018-07-25">2018-07-25 发布</time></div>
+<div class="content"><p>上次我们 <a href="/tech/use-lxrunoffline-to-install-arch-linux/">用 LxRunOffline 安装了 Arch Linux</a>，下一步就要在 WSL 之上构建开发环境了。开发环境的一个很重要的部分就是代码编辑器（或者 IDE），这里就要在 WSL 上安装运行 <a target="_blank" href="https://code.visualstudio.com/">VSCode</a>。</p>
+<div id="more"></div>
+<h2 id="准备工作"><a class="anchor" href="#准备工作"><span class="anchor-inner">¶</span></a>准备工作</h2>
+<ol start="0">
+<li>本文假设你已经有基本的 Arch Linux 使用经验；</li>
+<li>你需要在 WSL 上安装好 Arch Linux，并配置了 <a target="_blank" href="https://www.archlinuxcn.org/archlinux-cn-repo-and-mirror/">Arch Linux 中文社区仓库</a>；</li>
+<li>安装 <a target="_blank" href="https://sourceforge.net/projects/vcxsrv/">VcXsrv</a>。（虽然 VcXsrv 有个导致 VSCode 花屏的 bug，但是我不喜欢那个夹带了一堆我用不到的功能的 <a target="_blank" href="https://mobaxterm.mobatek.net/">MobaXterm</a>，所以就还是用 VcXsrv 了。这个 bug 的解决方案是：当花屏时，使用 <code>Ctrl + Shift + P</code> 输入 reload 回车重新加载窗口。）</li>
+</ol>
+<h2 id="安装字体"><a class="anchor" href="#安装字体"><span class="anchor-inner">¶</span></a>安装字体</h2>
+<p>安装你喜欢的 <a target="_blank" href="https://wiki.archlinux.org/index.php/Fonts_%28%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87%29">字体</a>。我的选择是 <code>noto-fonts noto-fonts-cjk noto-fonts-emoji otf-fira-code</code>。</p>
+<p>安装字体后需要设置默认字体。编辑 <code>~/.config/fontconfig/fonts.conf</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34;?&gt;</span>
+<span class="cp">&lt;!DOCTYPE fontconfig SYSTEM &#34;fonts.dtd&#34;&gt;</span>
+<span class="nt">&lt;fontconfig&gt;</span>
+
+  <span class="nt">&lt;match</span> <span class="na">target=</span><span class="s">&#34;font&#34;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;edit</span> <span class="na">name=</span><span class="s">&#34;embeddedbitmap&#34;</span> <span class="na">mode=</span><span class="s">&#34;assign&#34;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;bool&gt;</span>false<span class="nt">&lt;/bool&gt;</span>
+    <span class="nt">&lt;/edit&gt;</span>
+  <span class="nt">&lt;/match&gt;</span>
+
+  <span class="nt">&lt;match&gt;</span>
+    <span class="nt">&lt;test</span> <span class="na">qual=</span><span class="s">&#34;any&#34;</span> <span class="na">name=</span><span class="s">&#34;family&#34;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>serif<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/test&gt;</span>
+    <span class="nt">&lt;edit</span> <span class="na">name=</span><span class="s">&#34;family&#34;</span> <span class="na">mode=</span><span class="s">&#34;prepend&#34;</span> <span class="na">binding=</span><span class="s">&#34;strong&#34;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>你喜欢的英文衬线字体，如 Noto Serif<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/edit&gt;</span>
+  <span class="nt">&lt;/match&gt;</span>
+  <span class="nt">&lt;match</span> <span class="na">target=</span><span class="s">&#34;pattern&#34;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;test</span> <span class="na">qual=</span><span class="s">&#34;any&#34;</span> <span class="na">name=</span><span class="s">&#34;family&#34;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>sans-serif<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/test&gt;</span>
+    <span class="nt">&lt;edit</span> <span class="na">name=</span><span class="s">&#34;family&#34;</span> <span class="na">mode=</span><span class="s">&#34;prepend&#34;</span> <span class="na">binding=</span><span class="s">&#34;strong&#34;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>你喜欢的英文非衬线字体，如 Noto Sans<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/edit&gt;</span>
+  <span class="nt">&lt;/match&gt;</span>
+  <span class="nt">&lt;match</span> <span class="na">target=</span><span class="s">&#34;pattern&#34;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;test</span> <span class="na">qual=</span><span class="s">&#34;any&#34;</span> <span class="na">name=</span><span class="s">&#34;family&#34;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>monospace<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/test&gt;</span>
+    <span class="nt">&lt;edit</span> <span class="na">name=</span><span class="s">&#34;family&#34;</span> <span class="na">mode=</span><span class="s">&#34;prepend&#34;</span> <span class="na">binding=</span><span class="s">&#34;strong&#34;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>你喜欢的等宽字体，如 Fira Code<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/edit&gt;</span>
+  <span class="nt">&lt;/match&gt;</span>
+
+  <span class="nt">&lt;match&gt;</span>
+    <span class="nt">&lt;test</span> <span class="na">name=</span><span class="s">&#34;lang&#34;</span> <span class="na">compare=</span><span class="s">&#34;contains&#34;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>zh<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/test&gt;</span>
+    <span class="nt">&lt;test</span> <span class="na">name=</span><span class="s">&#34;family&#34;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>serif<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/test&gt;</span>
+    <span class="nt">&lt;edit</span> <span class="na">name=</span><span class="s">&#34;family&#34;</span> <span class="na">mode=</span><span class="s">&#34;prepend&#34;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>你喜欢的中文衬线字体，如 Noto Serif CJK SC<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/edit&gt;</span>
+  <span class="nt">&lt;/match&gt;</span>
+  <span class="nt">&lt;match&gt;</span>
+    <span class="nt">&lt;test</span> <span class="na">name=</span><span class="s">&#34;lang&#34;</span> <span class="na">compare=</span><span class="s">&#34;contains&#34;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>zh<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/test&gt;</span>
+    <span class="nt">&lt;test</span> <span class="na">name=</span><span class="s">&#34;family&#34;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>sans-serif<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/test&gt;</span>
+    <span class="nt">&lt;edit</span> <span class="na">name=</span><span class="s">&#34;family&#34;</span> <span class="na">mode=</span><span class="s">&#34;prepend&#34;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>你喜欢的中文非衬线字体，如 Noto Sans CJK SC<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/edit&gt;</span>
+  <span class="nt">&lt;/match&gt;</span>
+  <span class="nt">&lt;match&gt;</span>
+    <span class="nt">&lt;test</span> <span class="na">name=</span><span class="s">&#34;lang&#34;</span> <span class="na">compare=</span><span class="s">&#34;contains&#34;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>zh<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/test&gt;</span>
+    <span class="nt">&lt;test</span> <span class="na">name=</span><span class="s">&#34;family&#34;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>monospace<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/test&gt;</span>
+    <span class="nt">&lt;edit</span> <span class="na">name=</span><span class="s">&#34;family&#34;</span> <span class="na">mode=</span><span class="s">&#34;prepend&#34;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;string&gt;</span>你喜欢的中文等宽字体，如 Noto Sans Mono CJK SC<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/edit&gt;</span>
+  <span class="nt">&lt;/match&gt;</span>
+
+<span class="nt">&lt;/fontconfig&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="安装-vscode"><a class="anchor" href="#安装-vscode"><span class="anchor-inner">¶</span></a>安装 VSCode</h2>
+<p>安装 <code>visual-studio-code</code>。使用 XLaunch 启动 VcXsrv，在倒数第二步勾选“Native openGL”。这里还建议勾选“Clipboard”并取消勾选“Primary selection”以获得最佳体验。（如果你担心每次都要手动勾选太麻烦的话，在最后一步点击“Save configuration”导出设置，以后就可以直接双击打开导出的设置运行 VcXsrv 了。）最后设置环境变量，在 <code>~/.bashrc</code> 内添加以下内容：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">export</span> <span class="nv">DISPLAY</span><span class="o">=</span>localhost:0.0
+<span class="nb">export</span> <span class="nv">LIBGL_ALWAYS_INDIRECT</span><span class="o">=</span><span class="m">1</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>重启 BASH，然后就可以执行 <code>code</code> 运行 VSCode 了。</p>
+<h2 id="中文输入"><a class="anchor" href="#中文输入"><span class="anchor-inner">¶</span></a>中文输入</h2>
+<p>WSL 内的输入与 Windows 的输入法并不通用，需要在 WSL 内单独安装输入法。安装 <code>fcitx fcitx-gtk2 fcitx-configtool</code>，然后执行 <code>fcitx</code> 即可启动输入法。在 fcitx 启动后运行 <code>fcitx-configtool</code> 进行设置。在 <code>~/.bashrc</code> 内设置环境变量：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">export</span> <span class="nv">GTK_IM_MODULE</span><span class="o">=</span>fcitx
+<span class="nb">export</span> <span class="nv">QT_IM_MODULE</span><span class="o">=</span>fcitx
+<span class="nb">export</span> <span class="nv">XMODIFIERS</span><span class="o">=</span>@im<span class="o">=</span>fcitx
+</code></pre></td></tr></table>
+</div>
+</div><p>重启 BASH，运行 <code>code</code>，就可以使用中文输入了。</p>
+<h2 id="美化主题"><a class="anchor" href="#美化主题"><span class="anchor-inner">¶</span></a>美化主题</h2>
+<p>系统默认的外观非常丑陋。你可以安装自己的 <a target="_blank" href="https://wiki.archlinux.org/index.php/GTK%2B_%28%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87%29#.E4.B8.BB.E9.A2.98">GTK+ 2 主题</a>、<a target="_blank" href="https://wiki.archlinux.org/index.php/Icons#Icon_themes">图标主题</a>、<a target="_blank" href="https://wiki.archlinux.org/index.php/Cursor_themes_%28%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87%29">鼠标指针主题</a> 来美化。我使用的是 <code>gnome-themes-extra gtk-engine-murrine arc-icon-theme arc-gtk-theme</code> 和 <a target="_blank" href="https://aur.archlinux.org/packages/windows8-cursor/"><code>windows8-cursor</code></a>（AUR）。</p>
+<p>安装好软件包之后需要分别进行设置。编辑 <code>~/.gtkrc-2.0</code> 应用 GTK+ 2 主题和图标主题：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-ini" data-lang="ini"><span class="na">gtk-icon-theme-name</span> <span class="o">=</span> <span class="s">&#34;&lt;图标主题&gt;&#34;</span>
+<span class="na">gtk-theme-name</span> <span class="o">=</span> <span class="s">&#34;&lt;GTK+ 2 主题&gt;&#34;</span>
+<span class="na">gtk-font-name</span> <span class="o">=</span> <span class="s">&#34;&lt;字体名称&gt; &lt;字号&gt;&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>例如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-ini" data-lang="ini"><span class="na">gtk-icon-theme-name</span> <span class="o">=</span> <span class="s">&#34;Arc&#34;</span>
+<span class="na">gtk-theme-name</span> <span class="o">=</span> <span class="s">&#34;Arc-Dark&#34;</span>
+<span class="na">gtk-font-name</span> <span class="o">=</span> <span class="s">&#34;Noto Sans 10&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>编辑 <code>~/.icons/default/index.theme</code> 应用鼠标指针主题：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-ini" data-lang="ini"><span class="k">[icon theme]</span>
+<span class="na">Inherits</span><span class="o">=</span><span class="s">&lt;鼠标指针主题，如 Windows8-cursor&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="finish.png" alt="Enjoy~"></p>
+<p>到这里为止，整个图形环境都配置完成了。撒花🎉！</p>
+</div><div id="comment">
+  <script src="https://utteranc.es/client.js"
+          repo="vaparo/blog"
+          issue-term="pathname"
+          label="comment"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+  </script>
+</div>
+</article></main><footer>
+  © vaParo 2015-2021. Built with <a href="https://gohugo.io" target="_blank">Hugo</a>.
+</footer>
+</div></div></body>
+</html>

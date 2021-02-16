@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><title>Idris 中类型安全的 printf | vaParo 的世界</title>
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css/normalize.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/firacode/distr/fira_code.css">
+  <link rel="stylesheet" href="/fonts/andika-phon/andika-phon.css"><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+  <div id="outer"><div id="inner"><header>
+  <nav><div id="breadcrumb">
+  /<a href="/">vaParo 的世界/</a><a href="/tech/">技术/</a></div>
+<div id="site-nav"><a href="/tech/">技术</a><a href="/thoughts/">随想</a><a href="/studies/">博学</a><a href="/memories/">记忆</a><a href="/universe/">宇宙</a><a href="/about/">关于</a></div>
+</nav>
+  <h1>Idris 中类型安全的 printf</h1>
+</header>
+<main><article><div class="meta"><time datetime="2018-04-05">2018-04-05 发布</time></div>
+<div class="content"><p>从寒假开始，断断续续地玩了两个月 <a target="_blank" href="http://idris-lang.org/">Idris</a>。最开始让我决定开 Idris 这个坑的还是 <a target="_blank" href="https://www.zhihu.com/question/55342708/answer/148680032">这篇文章</a> 中的这句话：</p>
+<blockquote>
+<p>Idris 是极少几种可以实现强类型 printf 的语言。</p>
+</blockquote>
+<p>那么下面就开始利用依赖类型构造一个强类型的 <code>printf</code> 函数吧！</p>
+<div id="more"></div>
+<h2 id="hlist"><a class="anchor" href="#hlist"><span class="anchor-inner">¶</span></a><code>HList</code></h2>
+<p>为了更容易实现强类型 <code>printf</code>，我需要实现一个 <code>HList</code>（heterogenous list）类型。<code>HList</code> 是一种可以包含不同类型元素的列表，其定义类似于 <code>Vect</code>（带长度的列表，依赖类型里一般叫作 vector）：</p>
+<p>（以后 Idris 源码中都默认带有 <code>%access public export</code> 和 <code>%default total</code>。）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-idris" data-lang="idris"><span class="kr">data</span> <span class="kt">HList</span> <span class="ow">:</span> <span class="ow">{</span><span class="kr">default</span> <span class="kt">Type</span> t <span class="ow">:</span> <span class="kr">_</span><span class="ow">}</span> <span class="ow">-&gt;</span> <span class="ow">(</span>ts <span class="ow">:</span> <span class="kt">List</span> t<span class="ow">)</span> <span class="ow">-&gt;</span> <span class="kt">Type</span> <span class="kr">where</span>
+  <span class="nf">Nil</span>  <span class="ow">:</span> <span class="kt">HList</span> <span class="ow">[]</span>
+  <span class="ow">(::)</span> <span class="ow">:</span> a <span class="ow">-&gt;</span> <span class="kt">HList</span> ts <span class="ow">-&gt;</span> <span class="kt">HList</span> <span class="ow">(</span>a <span class="ow">::</span> ts<span class="ow">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>它的类型中有一个 <code>List t</code> 参数来指定每个元素的类型。在 <a target="_blank" href="https://github.com/vaparo/sandbox/blob/cd748aeb4dd8153f23b8cae8fb17c35a194c6853/Sandbox/HList.idr">我的 Github</a> 上还有一些简单函数的定义，但这里只需要这个类型定义就够了。</p>
+<p>（<a target="_blank" href="https://prismjs.com/">prism.js</a> 不支持 Idris，差评……）</p>
+<h2 id="实现-format-函数"><a class="anchor" href="#实现-format-函数"><span class="anchor-inner">¶</span></a>实现 format 函数</h2>
+<p>要实现一个简单的类型安全的 format 函数，其第二个参数（格式化数据）的类型要依赖于第一个参数（格式化字符串），因此需要先实现由第一个参数得到第二个参数类型的函数。一开始我是由第一个参数直接得到第二个参数，但不明原因导致编译不过。参考了 Github 上已有的实现以后添加了一个中间类型来表示格式化字符串的解析结果：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-idris" data-lang="idris"><span class="kr">data</span> <span class="kt">Fmt</span> <span class="ow">=</span> <span class="kt">FInt</span> <span class="ow">|</span> <span class="kt">FInteger</span> <span class="ow">|</span> <span class="kt">FNat</span> <span class="ow">|</span> <span class="kt">FDouble</span> <span class="ow">|</span> <span class="kt">FString</span> <span class="ow">|</span> <span class="kt">FLiteral</span> <span class="kt">Char</span>
+
+<span class="nf">toFmt</span> <span class="ow">:</span> <span class="kt">String</span> <span class="ow">-&gt;</span> <span class="kt">List</span> <span class="kt">Fmt</span>
+toFmt <span class="ow">=</span> toFmt&#39; <span class="ow">.</span> unpack
+  <span class="kr">where</span> toFmt&#39; <span class="ow">(</span><span class="sc">&#39;%&#39;</span> <span class="ow">::</span> c <span class="ow">::</span> r<span class="ow">)</span> <span class="ow">=</span>
+          <span class="ow">(::</span> toFmt&#39; r<span class="ow">)</span> <span class="ow">$</span> <span class="kr">case</span> c <span class="kr">of</span>
+            <span class="sc">&#39;d&#39;</span> <span class="ow">=&gt;</span> <span class="kt">FInt</span>
+            <span class="sc">&#39;l&#39;</span> <span class="ow">=&gt;</span> <span class="kt">FInteger</span>
+            <span class="sc">&#39;u&#39;</span> <span class="ow">=&gt;</span> <span class="kt">FNat</span>
+            <span class="sc">&#39;e&#39;</span> <span class="ow">=&gt;</span> <span class="kt">FDouble</span>
+            <span class="sc">&#39;s&#39;</span> <span class="ow">=&gt;</span> <span class="kt">FString</span>
+            <span class="sc">&#39;%&#39;</span> <span class="ow">=&gt;</span> <span class="kt">FLiteral</span> <span class="sc">&#39;%&#39;</span>
+            <span class="kr">_</span> <span class="ow">=&gt;</span> assert_unreachable
+        toFmt&#39; <span class="ow">(</span>c <span class="ow">::</span> r<span class="ow">)</span> <span class="ow">=</span> <span class="kt">FLiteral</span> c <span class="ow">::</span> toFmt&#39; r
+        toFmt&#39; <span class="ow">[]</span> <span class="ow">=</span> <span class="ow">[]</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>toFmt</code> 函数用于把字符串转换为 <code>Fmt</code> 类型。由于这个函数只用于类型推导，所以那个 <code>assert_unreachable</code> 是没有影响的。</p>
+<p>然后就是函数 <code>formatTy</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-idris" data-lang="idris"><span class="nf">formatTy</span> <span class="ow">:</span> <span class="kt">List</span> <span class="kt">Fmt</span> <span class="ow">-&gt;</span> <span class="kt">List</span> <span class="kt">Type</span>
+formatTy <span class="ow">=</span> flip foldr <span class="ow">[]</span> <span class="ow">$</span> <span class="ow">\</span>fmt <span class="ow">=&gt;</span> <span class="kr">case</span> fmt <span class="kr">of</span>
+             <span class="kt">FInt</span> <span class="ow">=&gt;</span> <span class="ow">(</span><span class="kt">Int</span> <span class="ow">::)</span>
+             <span class="kt">FInteger</span> <span class="ow">=&gt;</span> <span class="ow">(</span><span class="kt">Integer</span> <span class="ow">::)</span>
+             <span class="kt">FNat</span> <span class="ow">=&gt;</span> <span class="ow">(</span><span class="kt">Nat</span> <span class="ow">::)</span>
+             <span class="kt">FDouble</span> <span class="ow">=&gt;</span> <span class="ow">(</span><span class="kt">Double</span> <span class="ow">::)</span>
+             <span class="kt">FString</span> <span class="ow">=&gt;</span> <span class="ow">(</span><span class="kt">String</span> <span class="ow">::)</span>
+             <span class="kr">_</span> <span class="ow">=&gt;</span> id
+</code></pre></td></tr></table>
+</div>
+</div><p>把这个函数的值喂给 <code>HList</code> 就是第二个参数的类型了。（这里函数式的 point-free 技巧用得有点多，希望不影响阅读。）</p>
+<p>这样，<code>formatHList</code> 函数就很好定义了：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-idris" data-lang="idris"><span class="nf">formatHList</span> <span class="ow">:</span> <span class="ow">(</span>fmtStr <span class="ow">:</span> <span class="kt">String</span><span class="ow">)</span> <span class="ow">-&gt;</span> <span class="kt">HList</span> <span class="ow">(</span>formatTy <span class="ow">$</span> toFmt fmtStr<span class="ow">)</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
+formatHList fmtStr <span class="ow">=</span> formatHList&#39; <span class="ow">(</span>toFmt fmtStr<span class="ow">)</span>
+  <span class="kr">where</span> formatHList&#39; <span class="ow">:</span> <span class="ow">(</span>fmt <span class="ow">:</span> <span class="kt">List</span> <span class="kt">Fmt</span><span class="ow">)</span> <span class="ow">-&gt;</span> <span class="kt">HList</span> <span class="ow">(</span>formatTy fmt<span class="ow">)</span> <span class="ow">-&gt;</span> <span class="kt">String</span>
+        formatHList&#39; <span class="ow">(</span><span class="kt">FInt</span> <span class="ow">::</span> rFmt<span class="ow">)</span> <span class="ow">(</span>x <span class="ow">::</span> r<span class="ow">)</span> <span class="ow">=</span> show x <span class="ow">++</span> formatHList&#39; rFmt r
+        formatHList&#39; <span class="ow">(</span><span class="kt">FInteger</span> <span class="ow">::</span> rFmt<span class="ow">)</span> <span class="ow">(</span>x <span class="ow">::</span> r<span class="ow">)</span> <span class="ow">=</span> show x <span class="ow">++</span> formatHList&#39; rFmt r
+        <span class="ow">(...)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>下面大段的重复代码被我省略了。这里的重点是函数的类型：第一个参数为 <code>String</code> 类型，第二个参数的类型为 <code>HList (formatTy $ toFmt fmtStr)</code> 依赖了第一个参数的值。当第一个参数改变，第二个参数所需要的类型也会相应改变。实际的效果就是：当使用者写错了格式化字符串或格式化参数，程序都会编译不过。这就是我们的目的。</p>
+<h2 id="柯里化"><a class="anchor" href="#柯里化"><span class="anchor-inner">¶</span></a>柯里化</h2>
+<p>目的达到了，但是注意这个函数接受了一个 <code>HList</code> 作为参数列表。这在函数式语言中是非常难看的。由于这里用了 <code>HList</code>，所以可以写一个通用的函数来柯里化所有接受 <code>HList</code> 作为参数的函数：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-idris" data-lang="idris"><span class="nf">curryHListTy</span> <span class="ow">:</span> <span class="kt">List</span> <span class="kt">Type</span> <span class="ow">-&gt;</span> <span class="kt">Type</span> <span class="ow">-&gt;</span> <span class="kt">Type</span>
+curryHListTy <span class="ow">(</span>t <span class="ow">::</span> r<span class="ow">)</span> u <span class="ow">=</span> t <span class="ow">-&gt;</span> curryHListTy r u
+curryHListTy <span class="ow">[]</span> u <span class="ow">=</span> u
+
+<span class="nf">curryHList</span> <span class="ow">:</span> <span class="ow">(</span><span class="kt">HList</span> ts <span class="ow">-&gt;</span> u<span class="ow">)</span> <span class="ow">-&gt;</span> curryHListTy ts u
+curryHList <span class="ow">{</span>ts <span class="ow">=</span> <span class="kr">_</span> <span class="ow">::</span> <span class="kr">_</span><span class="ow">}</span> f <span class="ow">=</span> <span class="ow">\</span>x <span class="ow">=&gt;</span> curryHList <span class="ow">(\</span>l <span class="ow">=&gt;</span> f <span class="ow">(</span>x <span class="ow">::</span> l<span class="ow">))</span>
+curryHList <span class="ow">{</span>ts <span class="ow">=</span> <span class="ow">[]}</span> f <span class="ow">=</span> f <span class="ow">[]</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>curryHList</code> 的第二个参数的类型同样依赖于第一个参数的类型。它接受一个函数，返回一个柯里化的函数。于是之前的 <code>formatHList</code> 函数可以用它柯里化成多参数的函数了：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-idris" data-lang="idris"><span class="nf">format</span> <span class="ow">:</span> <span class="ow">(</span>fmtStr <span class="ow">:</span> <span class="kt">String</span><span class="ow">)</span> <span class="ow">-&gt;</span> curryHListTy <span class="ow">(</span>formatTy <span class="ow">$</span> toFmt fmtStr<span class="ow">)</span> <span class="kt">String</span>
+format fmtStr <span class="ow">=</span> curryHList <span class="ow">$</span> formatHList fmtStr
+</code></pre></td></tr></table>
+</div>
+</div><p>最后实现 <code>printfHList</code> 和 <code>printf</code> 函数：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-idris" data-lang="idris"><span class="nf">printfHList</span> <span class="ow">:</span> <span class="ow">(</span>fmtStr <span class="ow">:</span> <span class="kt">String</span><span class="ow">)</span> <span class="ow">-&gt;</span> <span class="kt">HList</span> <span class="ow">(</span>formatTy <span class="ow">$</span> toFmt fmtStr<span class="ow">)</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="ow">()</span>
+printfHList fmtStr args <span class="ow">=</span> putStr <span class="ow">$</span> formatHList fmtStr args
+
+<span class="nf">printf</span> <span class="ow">:</span> <span class="ow">(</span>fmtStr <span class="ow">:</span> <span class="kt">String</span><span class="ow">)</span> <span class="ow">-&gt;</span> curryHListTy <span class="ow">(</span>formatTy <span class="ow">$</span> toFmt fmtStr<span class="ow">)</span> <span class="ow">(</span><span class="kt">IO</span> <span class="ow">())</span>
+printf fmtStr <span class="ow">=</span> curryHList <span class="ow">$</span> printfHList fmtStr
+</code></pre></td></tr></table>
+</div>
+</div><p>完成！从这个函数的实现可以窥见类型系统的强大之处。效果：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-plain" data-lang="plain">*Sandbox&gt; format &#34;hello, %s&#34; &#34;problem233&#34;
+&#34;hello, problem233&#34; : String
+*Sandbox&gt; format &#34;hello, %s&#34; 1
+(input):1:1-20:String is not a numeric type
+*Sandbox&gt; format &#34;hello, %s. you&#39;re the %uth visitor&#34; &#34;problem233&#34; 20
+&#34;hello, problem233. you&#39;re the 20th visitor&#34; : String
+*Sandbox&gt; format &#34;hello, %s. you&#39;re the %uth visitor&#34; &#34;problem233&#34; (-1)
+(input):1:1-61:Can&#39;t find implementation for Neg Nat
+*Sandbox&gt; format &#34;hello, %p&#34; &#34;problem233&#34;
+(input):1:1-31:format &#34;hello, %p&#34; does not have a function type (curryHListTy (formatTy (toFmt &#34;hello, %p&#34;)) String)
+</code></pre></td></tr></table>
+</div>
+</div></div><div id="comment">
+  <script src="https://utteranc.es/client.js"
+          repo="vaparo/blog"
+          issue-term="pathname"
+          label="comment"
+          theme="github-light"
+          crossorigin="anonymous"
+          async>
+  </script>
+</div>
+</article></main><footer>
+  © vaParo 2015-2021. Built with <a href="https://gohugo.io" target="_blank">Hugo</a>.
+</footer>
+</div></div></body>
+</html>

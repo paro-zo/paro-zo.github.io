@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>宇宙 on vaParo 的世界</title>
+    <link>https://vaparo.github.io/universe/</link>
+    <description>Recent content in 宇宙 on vaParo 的世界</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sat, 15 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://vaparo.github.io/universe/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>十二光分</title>
+      <link>https://vaparo.github.io/universe/20200815-twelve-light-minutes/</link>
+      <pubDate>Sat, 15 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/universe/20200815-twelve-light-minutes/</guid>
+      <description>“正式欢迎各位平安来到火星！经历了漫长的六个月旅途和惊险的着陆的各位，现在应该已经在新人公寓休息。已到日暮时分，祝各位享受在火星的第一夜。明</description>
+    </item>
+    
+    <item>
+      <title>时空尽头的图书馆</title>
+      <link>https://vaparo.github.io/universe/20200620-library-at-the-end-of-space-and-time/</link>
+      <pubDate>Sat, 20 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/universe/20200620-library-at-the-end-of-space-and-time/</guid>
+      <description>睁眼，醒来，又是新的一天。 洗漱，吃饭。这是我每次醒来的习惯。在这片领域，这样的行为并没有什么意义。连同睡觉一起，这三件事在现实中消耗的时间估</description>
+    </item>
+    
+  </channel>
+</rss>

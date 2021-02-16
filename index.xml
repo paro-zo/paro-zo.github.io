@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>vaParo 的世界</title>
+    <link>https://vaparo.github.io/</link>
+    <description>Recent content on vaParo 的世界</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 16 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://vaparo.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>关于</title>
+      <link>https://vaparo.github.io/about/</link>
+      <pubDate>Fri, 05 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/about/</guid>
+      <description>关于本站 本站分为五个栏目。 技术：发表信息技术相关内容。 随想：发表散文、诗歌、现实背景的小说等。 博学：分享各种学科的知识。 记忆：记录值得被互联</description>
+    </item>
+    
+    <item>
+      <title>雪夜</title>
+      <link>https://vaparo.github.io/thoughts/20210216-snowy-night/</link>
+      <pubDate>Tue, 16 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/thoughts/20210216-snowy-night/</guid>
+      <description>防盗栏遮挡了屋外的路灯光，在拉上的窗帘上投下条条杠杠的阴影。冷风从窗户的缝隙渗入，吹得阴影缓缓摇摆。窗前，灰狼埋头赶着作业。 外面正在下雪。灰</description>
+    </item>
+    
+    <item>
+      <title>登山</title>
+      <link>https://vaparo.github.io/thoughts/20201101-mountain-climbing/</link>
+      <pubDate>Sat, 05 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/thoughts/20201101-mountain-climbing/</guid>
+      <description>沙沙，沙沙…… 呼，呼…… 山腰上，通向山顶的小径遍布碎石和杂草，一只灰狼双手撑着两膝，气喘吁吁。 清风自山顶吹下，乱草纷纷向后倒伏，灰狼抬头望去</description>
+    </item>
+    
+    <item>
+      <title>成都大学毛洪涛溺亡事件</title>
+      <link>https://vaparo.github.io/memories/20201128-mao-hongtao/</link>
+      <pubDate>Sat, 28 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/memories/20201128-mao-hongtao/</guid>
+      <description>媒体信息 人民网 事件播报 人民网成都 10 月 16 日电 （王洪江）今日，记者从成都市公安局温江区公安分局官方微博平安温江获悉，成都大学党委书记毛洪涛遗体被</description>
+    </item>
+    
+    <item>
+      <title>晚餐后</title>
+      <link>https://vaparo.github.io/thoughts/20201112-after-supper/</link>
+      <pubDate>Thu, 12 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/thoughts/20201112-after-supper/</guid>
+      <description>依旧早早吃完了晚餐，依旧以那匆忙的步伐，依旧是那件冷清的教室。期中考试结束，大大小小的收纳箱、高高低低的书堆，都还杂乱无章地堆放在走廊边。整</description>
+    </item>
+    
+    <item>
+      <title>十二光分</title>
+      <link>https://vaparo.github.io/universe/20200815-twelve-light-minutes/</link>
+      <pubDate>Sat, 15 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/universe/20200815-twelve-light-minutes/</guid>
+      <description>“正式欢迎各位平安来到火星！经历了漫长的六个月旅途和惊险的着陆的各位，现在应该已经在新人公寓休息。已到日暮时分，祝各位享受在火星的第一夜。明</description>
+    </item>
+    
+    <item>
+      <title>霜花</title>
+      <link>https://vaparo.github.io/thoughts/20200723-frost-flower/</link>
+      <pubDate>Thu, 23 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/thoughts/20200723-frost-flower/</guid>
+      <description>寒冬、朗星、寂夜 北风凛冽，寒鸦悲鸣 如镜的窗上，霜花默默蜷缩着—— 生于严寒，多么渴望光芒的照耀 却又恐惧着，那太阳的热烈</description>
+    </item>
+    
+    <item>
+      <title>时空尽头的图书馆</title>
+      <link>https://vaparo.github.io/universe/20200620-library-at-the-end-of-space-and-time/</link>
+      <pubDate>Sat, 20 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/universe/20200620-library-at-the-end-of-space-and-time/</guid>
+      <description>睁眼，醒来，又是新的一天。 洗漱，吃饭。这是我每次醒来的习惯。在这片领域，这样的行为并没有什么意义。连同睡觉一起，这三件事在现实中消耗的时间估</description>
+    </item>
+    
+    <item>
+      <title>在 Typescript 中模拟高阶类型</title>
+      <link>https://vaparo.github.io/tech/20190908-higher-kinded-types-in-typescript/</link>
+      <pubDate>Sun, 08 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/tech/20190908-higher-kinded-types-in-typescript/</guid>
+      <description>高阶类型（Higher Kinded Types）对我这个 PL 爱好者来说，几乎是必备的语言特性了。Typescript 是我主要使用的语言之一，它虽然不直接支</description>
+    </item>
+    
+    <item>
+      <title>在 WSL 上的 Arch Linux 里运行 VSCode</title>
+      <link>https://vaparo.github.io/tech/20180725-run-vscode-on-archlinux-on-wsl/</link>
+      <pubDate>Wed, 25 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/tech/20180725-run-vscode-on-archlinux-on-wsl/</guid>
+      <description>上次我们 用 LxRunOffline 安装了 Arch Linux，下一步就要在 WSL 之上构建开发环境了。开发环境的一个很重要的部分就是代码编辑器（或者 IDE），这里就要在 WSL 上安装</description>
+    </item>
+    
+    <item>
+      <title>Idris 中类型安全的 printf</title>
+      <link>https://vaparo.github.io/tech/20180405-type-safe-printf-in-idris/</link>
+      <pubDate>Thu, 05 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/tech/20180405-type-safe-printf-in-idris/</guid>
+      <description>从寒假开始，断断续续地玩了两个月 Idris。最开始让我决定开 Idris 这个坑的还是 这篇文章 中的这句话： Idris 是极少几种可以实现强类型 printf 的语言。 那么下面就</description>
+    </item>
+    
+    <item>
+      <title>用 LxRunOffline 安装 Arch Linux</title>
+      <link>https://vaparo.github.io/tech/20180215-use-lxrunoffline-to-install-arch-linux/</link>
+      <pubDate>Thu, 15 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/tech/20180215-use-lxrunoffline-to-install-arch-linux/</guid>
+      <description>前段时间重装系统之后我就一直在 WSL 内开发。Ubuntu 因为我不喜欢所以直接放弃（？？？），所以就一直在用 openSUSE。然而现在越用越感觉 zypper</description>
+    </item>
+    
+  </channel>
+</rss>

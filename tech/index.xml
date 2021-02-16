@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>技术 on vaParo 的世界</title>
+    <link>https://vaparo.github.io/tech/</link>
+    <description>Recent content in 技术 on vaParo 的世界</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 08 Sep 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://vaparo.github.io/tech/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>在 Typescript 中模拟高阶类型</title>
+      <link>https://vaparo.github.io/tech/20190908-higher-kinded-types-in-typescript/</link>
+      <pubDate>Sun, 08 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/tech/20190908-higher-kinded-types-in-typescript/</guid>
+      <description>高阶类型（Higher Kinded Types）对我这个 PL 爱好者来说，几乎是必备的语言特性了。Typescript 是我主要使用的语言之一，它虽然不直接支</description>
+    </item>
+    
+    <item>
+      <title>在 WSL 上的 Arch Linux 里运行 VSCode</title>
+      <link>https://vaparo.github.io/tech/20180725-run-vscode-on-archlinux-on-wsl/</link>
+      <pubDate>Wed, 25 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/tech/20180725-run-vscode-on-archlinux-on-wsl/</guid>
+      <description>上次我们 用 LxRunOffline 安装了 Arch Linux，下一步就要在 WSL 之上构建开发环境了。开发环境的一个很重要的部分就是代码编辑器（或者 IDE），这里就要在 WSL 上安装</description>
+    </item>
+    
+    <item>
+      <title>Idris 中类型安全的 printf</title>
+      <link>https://vaparo.github.io/tech/20180405-type-safe-printf-in-idris/</link>
+      <pubDate>Thu, 05 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/tech/20180405-type-safe-printf-in-idris/</guid>
+      <description>从寒假开始，断断续续地玩了两个月 Idris。最开始让我决定开 Idris 这个坑的还是 这篇文章 中的这句话： Idris 是极少几种可以实现强类型 printf 的语言。 那么下面就</description>
+    </item>
+    
+    <item>
+      <title>用 LxRunOffline 安装 Arch Linux</title>
+      <link>https://vaparo.github.io/tech/20180215-use-lxrunoffline-to-install-arch-linux/</link>
+      <pubDate>Thu, 15 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://vaparo.github.io/tech/20180215-use-lxrunoffline-to-install-arch-linux/</guid>
+      <description>前段时间重装系统之后我就一直在 WSL 内开发。Ubuntu 因为我不喜欢所以直接放弃（？？？），所以就一直在用 openSUSE。然而现在越用越感觉 zypper</description>
+    </item>
+    
+  </channel>
+</rss>
